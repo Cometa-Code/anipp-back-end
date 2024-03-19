@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('account_bank')->nullable();
             $table->enum('financial_situation', ['Adimplente', 'Inadimplente', 'Indefinido'])->default('Indefinido');
             $table->string('date_of_birth')->nullable();
-            $table->boolean('isActive')->default(true);
+            $table->boolean('is_active')->default(true);
             $table->string('password');
             $table->timestamps();
         });

@@ -18,7 +18,12 @@ class UserController extends Controller
             return Responses::BADREQUEST('E-mail ou CPF já cadastrados na base de dados!');
         }
 
-        $createUser = User::create($request->all());
+        $data = $request->all();
+
+        $data['role'] = 'associate';
+        $data['is_associate'] = true;
+
+        $createUser = User::create($data);
 
         if (!$createUser)
         {
