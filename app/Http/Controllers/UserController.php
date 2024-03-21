@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Http\Helpers\Responses;
 use App\Http\Requests\Users\CreateUserRequest;
-use App\Http\Requests\Users\GenerateResetPasswordTokenUserRequest;
+use App\Http\Requests\Users\GenerateRecoverPasswordTokenUserRequest;
 use App\Http\Requests\Users\LoginUserRequest;
+use App\Http\Requests\Users\RecoverPasswordUserRequest;
 use App\Models\ResetPassword;
 use App\Models\User;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -56,7 +56,7 @@ class UserController extends Controller
         return Responses::CREATED('Usuário criado com sucesso!', $createUser);
     }
 
-    public function generate_token(GenerateResetPasswordTokenUserRequest $request)
+    public function generate_token(GenerateRecoverPasswordTokenUserRequest $request)
     {
         $user = User::where('document_cpf', $request->user)->first();
 
@@ -91,15 +91,40 @@ class UserController extends Controller
 
     public function verify_token($token)
     {
-        $hasRecentToken = ResetPassword::where('token', $token)
+        $hasToken = ResetPassword::where('token', $token)
             ->where('token_expired_at', '>', Carbon::now())
             ->orderBy('created_at', 'desc')
             ->first();
 
-        if (!$hasRecentToken) {
+        if (!$hasToken) {
             return Responses::NOTFOUND('Token inválido, expirado ou já utilizado!');
         }
 
         return Responses::OK('Token válido!');
+    }
+
+    public function recover_password(RecoverPasswordUserRequest $request)
+    {
+        $hasToken = ResetPassword::where('token', $request->token)
+            ->where('token_expired_at', '>', Carbon::now())
+            ->whereHas('user', function ($query) use ($request) {
+                $query->where('email', $request->email);
+            })
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$hasToken) {
+            return Responses::NOTFOUND('Token inválido, expirado ou já utilizado!');
+        }
+
+        $user = User::firstWhere('email', $request->email);
+
+        $user->update([
+            'password' => $request->new_password
+        ]);
+
+        $hasToken->delete();
+
+        return Responses::OK('Senha redefinida com sucesso!');
     }
 }
