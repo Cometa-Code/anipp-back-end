@@ -88,4 +88,18 @@ class UserController extends Controller
 
         return Responses::CREATED('Token enviado ao e-mail do usuário!');
     }
+
+    public function verify_token($token)
+    {
+        $hasRecentToken = ResetPassword::where('token', $token)
+            ->where('token_expired_at', '>', Carbon::now())
+            ->orderBy('created_at', 'desc')
+            ->first();
+
+        if (!$hasRecentToken) {
+            return Responses::NOTFOUND('Token inválido, expirado ou já utilizado!');
+        }
+
+        return Responses::OK('Token válido!');
+    }
 }

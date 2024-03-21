@@ -17,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/user', [UserController::class, 'store']);
 Route::post('/user/login', [UserController::class, 'login']);
-Route::get('/user/recover-password', [UserController::class, 'generate_token']);
+Route::post('/user/recover-password', [UserController::class, 'generate_token']);
+Route::get('/user/recover-password/verify-token/{token}', [UserController::class, 'verify_token']);

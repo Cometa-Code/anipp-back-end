@@ -33,4 +33,14 @@ class Responses
             ]
         , 400);
     }
+
+    public static function NOTFOUND($message = '', $data = '') {
+        return response()->json(
+            [
+                'data' => $data,
+                'message' => $message,
+                'status' => 404
+            ]
+        , 404);
+    }
 }
