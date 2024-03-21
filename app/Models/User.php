@@ -69,4 +69,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserDependents::class, 'responsible_user_id');
     }
+
+    public function reset_password_tokens() : HasMany
+    {
+        return $this->hasMany(ResetPassword::class, 'user_id');
+    }
 }
