@@ -8,10 +8,12 @@ use App\Http\Requests\Users\CreateUserRequest;
 use App\Http\Requests\Users\GenerateRecoverPasswordTokenUserRequest;
 use App\Http\Requests\Users\LoginUserRequest;
 use App\Http\Requests\Users\RecoverPasswordUserRequest;
+use App\Mail\PasswordReset;
 use App\Models\ResetPassword;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -85,6 +87,8 @@ class UserController extends Controller
         if (!$createToken) {
             return Responses::BADREQUEST('Ocorreu um erro ao tentar criar um token para esse usuário');
         }
+
+        $sendMail = Mail::to($user->email)->send(new PasswordReset($user->name, $user->email, $random_token));
 
         return Responses::CREATED('Token enviado ao e-mail do usuário!');
     }
