@@ -12,11 +12,19 @@ use App\Mail\PasswordReset;
 use App\Models\ResetPassword;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    public function user()
+    {
+        $user = Auth::user();
+
+        return $user;
+    }
+
     public function login(LoginUserRequest $request)
     {
         $hasUser = User::where('document_cpf', $request->user)->first();
