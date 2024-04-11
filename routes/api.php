@@ -20,4 +20,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/user', [UserController::class, 'user']);
 
+    Route::get('/user/associates', [UserController::class, 'get_associates']);
 });

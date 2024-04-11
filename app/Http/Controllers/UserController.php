@@ -12,12 +12,33 @@ use App\Mail\PasswordReset;
 use App\Models\ResetPassword;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
+    public function get_associates(Request $request) {
+        $user = Auth::user();
+
+        $items_per_page = $request->query('items_per_page', 10);
+
+        if ($user->role == 'associate') return Responses::BADREQUEST('Usuário não possui permissões suficientes!');
+
+        if ($user->role == 'superadmin') {
+            $users = User::where('email', '!=', $user->email)->paginate($items_per_page);
+        }
+
+        if ($user->role == 'admin') {
+            $users = User::where('email', '!=', $user->email)
+                ->where('role', 'associate')
+                ->paginate($items_per_page);
+        }
+
+        return Responses::OK('Associados encontrados com sucesso', $users);
+    }
+
     public function user()
     {
         $user = Auth::user();
