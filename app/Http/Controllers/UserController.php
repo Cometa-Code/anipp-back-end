@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use App\Http\Helpers\Responses;
+use App\Http\Requests\Users\CreateAdvancedUserRequest;
 use App\Http\Requests\Users\CreateUserRequest;
 use App\Http\Requests\Users\GenerateRecoverPasswordTokenUserRequest;
 use App\Http\Requests\Users\LoginUserRequest;
@@ -37,6 +38,34 @@ class UserController extends Controller
         }
 
         return Responses::OK('Associados encontrados com sucesso', $users);
+    }
+
+    public function create_advanced_user(CreateAdvancedUserRequest $request) {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        if (($request->role == 'superadmin' || $request->role == 'admin') && $user->role == 'admin') {
+            return Responses::BADREQUEST('Apenas administradores autorizados podem tomar essa ação!');
+        }
+
+        $hasUser = User::where('email', $request->email)->orWhere('document_cpf', $request->document_cpf)->first();
+
+        if ($hasUser) {
+            return Responses::BADREQUEST('Usuário já cadastrado com o CPF ou E-mail informados!');
+        }
+
+        $data = $request->all();
+
+        $createUser = User::create($data);
+
+        if (!$createUser) {
+            return Responses::BADREQUEST('Erro ao criar usuário!');
+        }
+
+        return Responses::CREATED('Usuário adicionado com sucesso!');
     }
 
     public function user()

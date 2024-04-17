@@ -19,6 +19,6 @@ Route::post('/user/recover-password/set-password', [UserController::class, 'reco
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/user', [UserController::class, 'user']);
-
     Route::get('/user/associates', [UserController::class, 'get_associates']);
+    Route::post('/user/advanced', [UserController::class, 'create_advanced_user']);
 });

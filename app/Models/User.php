@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
         'document_cpf',
         'document_rg',
@@ -42,7 +43,8 @@ class User extends Authenticatable
         'account_bank',
         'financial_situation',
         'date_of_birth',
-        'isActive',
+        'is_active',
+        'is_associate',
     ];
 
     /**
