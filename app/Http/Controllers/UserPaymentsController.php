@@ -50,10 +50,10 @@ class UserPaymentsController extends Controller
         )
         ->first();
 
-        $getPayments['totalSumPayments'] = $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'];
-
-        $getPayments['financial_situation'] = $user->financial_situation;
-
-        return Responses::OK('', $getPayments);
+        return Responses::OK('', [
+            "data" => $getPayments,
+            "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
+            "financial_situation" => $user->financial_situation
+        ]);
     }
 }
