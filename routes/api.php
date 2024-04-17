@@ -21,4 +21,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user', [UserController::class, 'user']);
     Route::get('/user/associates', [UserController::class, 'get_associates']);
     Route::post('/user/advanced', [UserController::class, 'create_advanced_user']);
+    Route::put('/user/advanced', [UserController::class, 'update_advanced_user']);
 });

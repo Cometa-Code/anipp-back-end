@@ -9,6 +9,7 @@ use App\Http\Requests\Users\CreateUserRequest;
 use App\Http\Requests\Users\GenerateRecoverPasswordTokenUserRequest;
 use App\Http\Requests\Users\LoginUserRequest;
 use App\Http\Requests\Users\RecoverPasswordUserRequest;
+use App\Http\Requests\Users\UpdateAdvancedUserRequest;
 use App\Mail\PasswordReset;
 use App\Models\ResetPassword;
 use App\Models\User;
@@ -66,6 +67,36 @@ class UserController extends Controller
         }
 
         return Responses::CREATED('Usuário adicionado com sucesso!');
+    }
+
+    public function update_advanced_user(UpdateAdvancedUserRequest $request) {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        if ($request->role) {
+            if (($request->role == 'superadmin' || $request->role == 'admin') && $user->role == 'admin') {
+                return Responses::BADREQUEST('Apenas administradores autorizados podem tomar essa ação!');
+            }
+        }
+
+        $getUser = User::where('email', $request->email)->orWhere('document_cpf', $request->document_cpf)->first();
+
+        if (!$getUser) {
+            return Responses::BADREQUEST('Não foi possível encontrar um usuário com os dados especificados!');
+        }
+
+        $data = $request->all();
+
+        $getUser->update($data);
+
+        if (!$getUser) {
+            return Responses::BADREQUEST('Erro ao atualizar usuário!');
+        }
+
+        return Responses::OK('Usuário atualizado com sucesso!');
     }
 
     public function user()
