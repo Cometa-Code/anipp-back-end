@@ -30,7 +30,7 @@ class User extends Authenticatable
         'registration_number',
         'nationality',
         'marital_status',
-        'ocuppation',
+        'occupation',
         'affiliation_date',
         'address',
         'address_city_state',
