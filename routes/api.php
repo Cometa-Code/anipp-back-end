@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPaymentsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,4 +23,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user/associates', [UserController::class, 'get_associates']);
     Route::post('/user/advanced', [UserController::class, 'create_advanced_user']);
     Route::put('/user/advanced/{document}', [UserController::class, 'update_advanced_user']);
+
+    Route::post('/payments', [UserPaymentsController::class, 'store']);
 });
