@@ -25,4 +25,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/user/advanced/{document}', [UserController::class, 'update_advanced_user']);
 
     Route::post('/payments', [UserPaymentsController::class, 'store']);
+    Route::get('/payments', [UserPaymentsController::class, 'index']);
 });

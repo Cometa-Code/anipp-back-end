@@ -7,6 +7,7 @@ use App\Http\Requests\Payments\CreatePaymentRequest;
 use App\Models\UserPayments;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class UserPaymentsController extends Controller
 {
@@ -27,5 +28,32 @@ class UserPaymentsController extends Controller
         }
 
         return Responses::CREATED('Pagamento adicionado com sucesso!');
+    }
+
+    public function index(Request $request) {
+        $user = Auth::user();
+
+        $items_per_page = $request->query('items_per_page', 10);
+
+        $getPayments = UserPayments::where('user_id', $user->id)->orderBy('payment_date', 'asc')->paginate($items_per_page);
+
+        if (!$getPayments) {
+            return Responses::BADREQUEST('Erro ao buscar pagamentos!');
+        }
+
+        $sumPayments = UserPayments::where('user_id', $user->id)
+        ->select(
+            DB::raw('SUM(credit_value) as total_credit_value'),
+            DB::raw('SUM(membership_fee) as total_membership_fee'),
+            DB::raw('SUM(charges) as total_charges'),
+            DB::raw('SUM(fees) as total_fees')
+        )
+        ->first();
+
+        $getPayments['totalSumPayments'] = $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'];
+
+        $getPayments['financial_situation'] = $user->financial_situation;
+
+        return $getPayments;
     }
 }
