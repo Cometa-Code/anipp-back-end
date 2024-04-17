@@ -54,6 +54,6 @@ class UserPaymentsController extends Controller
 
         $getPayments['financial_situation'] = $user->financial_situation;
 
-        return $getPayments;
+        return Responses::OK('', $getPayments);
     }
 }
