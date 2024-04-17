@@ -68,7 +68,7 @@ class UserPaymentsController extends Controller
 
         $items_per_page = $request->query('items_per_page', 10);
 
-        $getUserInfos = User::where('id', $user->id)->first();
+        $getUserInfos = User::where('id', $user_id)->first();
 
         $getPayments = UserPayments::where('user_id', $user_id)->with('user')->orderBy('payment_date', 'asc')->paginate($items_per_page);
 
