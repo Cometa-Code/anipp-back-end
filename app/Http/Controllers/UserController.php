@@ -9,7 +9,6 @@ use App\Http\Requests\Users\CreateUserRequest;
 use App\Http\Requests\Users\GenerateRecoverPasswordTokenUserRequest;
 use App\Http\Requests\Users\LoginUserRequest;
 use App\Http\Requests\Users\RecoverPasswordUserRequest;
-use App\Http\Requests\Users\UpdateAdvancedUserRequest;
 use App\Mail\PasswordReset;
 use App\Models\ResetPassword;
 use App\Models\User;
@@ -69,11 +68,23 @@ class UserController extends Controller
         return Responses::CREATED('Usuário adicionado com sucesso!');
     }
 
-    public function update_advanced_user(UpdateAdvancedUserRequest $request) {
+    public function update_advanced_user(Request $request, $document) {
         $user = Auth::user();
 
         if ($user->role == 'associate') {
             return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $getUser = User::where('document_cpf', $document)->first();
+
+        if (!$getUser) {
+            return Responses::BADREQUEST('Não foi possível encontrar um usuário com os dados especificados!');
+        }
+
+        $hasUserEmail = User::where('email', $request->email)->first();
+
+        if ($hasUserEmail) {
+            return Responses::BADREQUEST('E-mail já cadastrado na base de dados.');
         }
 
         if ($request->role) {
@@ -82,13 +93,9 @@ class UserController extends Controller
             }
         }
 
-        $getUser = User::where('email', $request->email)->orWhere('document_cpf', $request->document_cpf)->first();
-
-        if (!$getUser) {
-            return Responses::BADREQUEST('Não foi possível encontrar um usuário com os dados especificados!');
-        }
-
         $data = $request->all();
+
+        $data['document_cpf'] = $document;
 
         $getUser->update($data);
 
