@@ -21,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
         'document_cpf',
         'document_rg',
@@ -29,7 +30,8 @@ class User extends Authenticatable
         'registration_number',
         'nationality',
         'marital_status',
-        'ocuppation',
+        'occupation',
+        'affiliation_date',
         'address',
         'address_city_state',
         'address_zipcode',
@@ -42,7 +44,8 @@ class User extends Authenticatable
         'account_bank',
         'financial_situation',
         'date_of_birth',
-        'isActive',
+        'is_active',
+        'is_associate',
     ];
 
     /**
@@ -68,6 +71,11 @@ class User extends Authenticatable
     public function dependents() : HasMany
     {
         return $this->hasMany(UserDependents::class, 'responsible_user_id');
+    }
+
+    public function payments() : HasMany
+    {
+        return $this->hasMany(UserPayments::class, 'user_id');
     }
 
     public function reset_password_tokens() : HasMany

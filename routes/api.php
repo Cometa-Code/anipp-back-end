@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserPaymentsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,5 +20,13 @@ Route::post('/user/recover-password/set-password', [UserController::class, 'reco
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/user', [UserController::class, 'user']);
+    Route::get('/user/associates', [UserController::class, 'get_associates']);
+    Route::post('/user/advanced', [UserController::class, 'create_advanced_user']);
+    Route::put('/user', [UserController::class, 'update_user']);
+    Route::put('/user/password', [UserController::class, 'update_password']);
+    Route::put('/user/advanced/{document}', [UserController::class, 'update_advanced_user']);
 
+    Route::post('/payments', [UserPaymentsController::class, 'store']);
+    Route::get('/payments', [UserPaymentsController::class, 'index']);
+    Route::get('/payments/{user_id}', [UserPaymentsController::class, 'get_associate_payments']);
 });
