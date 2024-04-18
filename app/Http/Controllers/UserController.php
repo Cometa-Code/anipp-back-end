@@ -203,6 +203,25 @@ class UserController extends Controller
         return Responses::OK('Dados atualizados com sucesso!');
     }
 
+    public function update_password(Request $request) {
+        $validated = $request->validate([
+            'actual_password' => 'required|string',
+            'new_password' => 'required|string'
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->actual_password, $user->password)) {
+            return Responses::BADREQUEST('Credenciais inválidas!');
+        }
+
+        $newPasswordHash = Hash::make($request->new_password);
+
+        $user->update(['password' => $newPasswordHash]);
+
+        return Responses::OK('Credenciais atualizadas com sucesso!');
+    }
+
     public function verify_token($token)
     {
         $hasToken = ResetPassword::where('token', $token)

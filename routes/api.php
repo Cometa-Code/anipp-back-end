@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/user/associates', [UserController::class, 'get_associates']);
     Route::post('/user/advanced', [UserController::class, 'create_advanced_user']);
     Route::put('/user', [UserController::class, 'update_user']);
+    Route::put('/user/password', [UserController::class, 'update_password']);
     Route::put('/user/advanced/{document}', [UserController::class, 'update_advanced_user']);
 
     Route::post('/payments', [UserPaymentsController::class, 'store']);
