@@ -189,6 +189,20 @@ class UserController extends Controller
         return Responses::CREATED('Token enviado ao e-mail do usuário!');
     }
 
+    public function update_user(Request $request) {
+        $user = Auth::user();
+
+        $data = $request->all();
+
+        $updateUser = $user->update($data);
+
+        if (!$updateUser) {
+            return Responses::BADREQUEST('Erro ao atualizar dados do usuário!');
+        }
+
+        return Responses::OK('Dados atualizados com sucesso!');
+    }
+
     public function verify_token($token)
     {
         $hasToken = ResetPassword::where('token', $token)
