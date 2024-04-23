@@ -7,6 +7,7 @@ use App\Http\Requests\Reports\CreateReportRequest;
 use App\Models\Reports;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
@@ -31,5 +32,21 @@ class ReportsController extends Controller
         }
 
         return Responses::CREATED('Informe criado com sucesso!');
+    }
+
+    public function index() {
+        $reports = Reports::orderBy('category')
+        ->get()
+        ->groupBy('category')
+        ->map(function ($items, $category) {
+            return [
+                'category' => $category,
+                'data' => $items
+            ];
+        })
+        ->values()
+        ->toArray();
+
+        return Responses::OK('', $reports);
     }
 }

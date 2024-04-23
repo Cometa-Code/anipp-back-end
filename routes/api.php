@@ -32,4 +32,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/payments/{user_id}', [UserPaymentsController::class, 'get_associate_payments']);
 
     Route::post('/reports', [ReportsController::class, 'store']);
+    Route::get('/reports', [ReportsController::class, 'index']);
 });
