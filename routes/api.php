@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPaymentsController;
 use Illuminate\Http\Request;
@@ -29,4 +30,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/payments', [UserPaymentsController::class, 'store']);
     Route::get('/payments', [UserPaymentsController::class, 'index']);
     Route::get('/payments/{user_id}', [UserPaymentsController::class, 'get_associate_payments']);
+
+    Route::post('/reports', [ReportsController::class, 'store']);
 });
