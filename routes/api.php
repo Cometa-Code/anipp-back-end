@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CashFlowController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserPaymentsController;
@@ -33,4 +34,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/reports', [ReportsController::class, 'store']);
     Route::get('/reports', [ReportsController::class, 'index']);
+
+    Route::post('/cash_flow', [CashFlowController::class, 'store']);
+    Route::get('/cash_flow', [CashFlowController::class, 'index']);
 });
