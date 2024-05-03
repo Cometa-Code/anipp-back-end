@@ -49,4 +49,21 @@ class ReportsController extends Controller
 
         return Responses::OK('', $reports);
     }
+
+    public function delete($id)
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $deleteReport = Reports::destroy($id);
+
+        if (!$deleteReport) {
+            return Responses::BADREQUEST('Ocorreu um erro ao tentar deletar um informativo!');
+        }
+
+        return Responses::OK('Informativo deletado com sucesso!');
+    }
 }

@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/reports', [ReportsController::class, 'store']);
     Route::get('/reports', [ReportsController::class, 'index']);
+    Route::delete('/reports/{id}', [ReportsController::class, 'delete']);
 
     Route::post('/cash_flow', [CashFlowController::class, 'store']);
     Route::get('/cash_flow', [CashFlowController::class, 'index']);
