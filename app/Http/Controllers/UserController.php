@@ -83,7 +83,7 @@ class UserController extends Controller
 
         $hasUserEmail = User::where('email', $request->email)->first();
 
-        if ($hasUserEmail) {
+        if (($request->email != $getUser->email) && $hasUserEmail) {
             return Responses::BADREQUEST('E-mail já cadastrado na base de dados.');
         }
 
