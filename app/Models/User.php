@@ -82,4 +82,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ResetPassword::class, 'user_id');
     }
+
+    public function cash_flow() : HasMany
+    {
+        return $this->hasMany(CashFlow::class);
+    }
 }
