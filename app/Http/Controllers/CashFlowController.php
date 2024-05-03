@@ -45,7 +45,7 @@ class CashFlowController extends Controller
         $inital_date = $request->query('initial_date', '2018-01-01');
         $finish_date = $request->query('finish_date', date('Y-m-d'));
 
-        $getCashFlow = CashFlow::whereBetween('date', [$inital_date, $finish_date])->paginate($items_per_page);
+        $getCashFlow = CashFlow::whereBetween('date', [$inital_date, $finish_date])->orderBy('date', 'desc')->paginate($items_per_page);
 
         $sumEntry = CashFlow::where('type', 'Entrada')
                             ->whereBetween('date', [$inital_date, $finish_date])

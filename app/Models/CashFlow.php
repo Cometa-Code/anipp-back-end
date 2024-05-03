@@ -20,6 +20,7 @@ class CashFlow extends Model
         'history_code',
         'history',
         'value',
+        'history_detail',
         'description'
     ];
 

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('history_code')->nullable();
             $table->string('history')->nullable();
             $table->decimal('value', 10, 2);
+            $table->string('history_detail')->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });
