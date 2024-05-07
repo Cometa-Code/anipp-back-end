@@ -69,10 +69,12 @@ class UserPaymentsController extends Controller
         }
 
         $items_per_page = $request->query('items_per_page', 10);
+        $inital_date = $request->query('initial_date', '2018-01-01');
+        $finish_date = $request->query('finish_date', date('Y-m-d'));
 
         $getUserInfos = User::where('id', $user_id)->first();
 
-        $getPayments = UserPayments::where('user_id', $user_id)->with('user')->orderBy('payment_date', 'desc')->paginate($items_per_page);
+        $getPayments = UserPayments::whereBetween('payment_date', [$inital_date, $finish_date])->where('user_id', $user_id)->with('user')->orderBy('payment_date', 'desc')->paginate($items_per_page);
 
         if (!$getPayments) {
             return Responses::BADREQUEST('Erro ao buscar pagamentos!');
