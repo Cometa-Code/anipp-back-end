@@ -28,12 +28,13 @@ class UserController extends Controller
         if ($user->role == 'associate') return Responses::BADREQUEST('Usuário não possui permissões suficientes!');
 
         if ($user->role == 'superadmin') {
-            $users = User::where('email', '!=', $user->email)->paginate($items_per_page);
+            $users = User::where('email', '!=', $user->email)->orderByRaw("FIELD(other_associations, 'Sim', 'Nao', 'Indefinido')")->paginate($items_per_page);
         }
 
         if ($user->role == 'admin') {
             $users = User::where('email', '!=', $user->email)
                 ->where('role', 'associate')
+                ->orderByRaw("FIELD(other_associations, 'Sim', 'Nao', 'Indefinido')")
                 ->paginate($items_per_page);
         }
 
