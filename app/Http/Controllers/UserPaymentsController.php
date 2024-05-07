@@ -44,7 +44,8 @@ class UserPaymentsController extends Controller
             return Responses::BADREQUEST('Erro ao buscar pagamentos!');
         }
 
-        $sumPayments = UserPayments::where('user_id', $user->id)
+        $sumPayments = UserPayments::whereBetween('payment_date', [$inital_date, $finish_date])
+        ->where('user_id', $user->id)
         ->select(
             DB::raw('SUM(credit_value) as total_credit_value'),
             DB::raw('SUM(membership_fee) as total_membership_fee'),
@@ -80,7 +81,8 @@ class UserPaymentsController extends Controller
             return Responses::BADREQUEST('Erro ao buscar pagamentos!');
         }
 
-        $sumPayments = UserPayments::where('user_id', $user_id)
+        $sumPayments = UserPayments::whereBetween('payment_date', [$inital_date, $finish_date])
+        ->where('user_id', $user_id)
         ->select(
             DB::raw('SUM(credit_value) as total_credit_value'),
             DB::raw('SUM(membership_fee) as total_membership_fee'),
