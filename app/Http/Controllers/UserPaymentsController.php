@@ -43,6 +43,9 @@ class UserPaymentsController extends Controller
 
         $payment_method = $request->C;
 
+        $payment_type = 'Adesao';
+        $credit_value = 0;
+
         if ($request->G > 0) {
             $payment_type = 'Anuidade';
             $credit_value = $request->G;
