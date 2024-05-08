@@ -73,7 +73,7 @@ class UserPaymentsController extends Controller
             'payment_type' => $payment_type,
             'payment_date' => $payment_date,
             'credit_value' => $credit_value,
-            'member_fee' => $membership_fee,
+            'membership_fee' => $membership_fee,
             'charges' => $charges,
             'fees' => $fees,
             'comments' => $comments
