@@ -95,7 +95,7 @@ class UserPaymentsController extends Controller
             'history' => null,
             'value' => $credit_value,
             'history_detail' => null,
-            'description' => $comments,
+            'description' => "Recebimento de $getUser->name",
         ]);
 
         if (!$createCashFlow) {
