@@ -35,7 +35,7 @@ class ReportsController extends Controller
     }
 
     public function index() {
-        $reports = Reports::orderBy('category')
+        $reports = Reports::orderBy('id', 'DESC')
         ->get()
         ->groupBy('category')
         ->map(function ($items, $category) {
