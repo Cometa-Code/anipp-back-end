@@ -19,6 +19,8 @@ Route::post('/user/recover-password', [UserController::class, 'generate_token'])
 Route::get('/user/recover-password/verify-token/{token}', [UserController::class, 'verify_token']);
 Route::post('/user/recover-password/set-password', [UserController::class, 'recover_password']);
 
+Route::post('/payments/table', [UserPaymentsController::class, 'insert_table_payments']);
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/user', [UserController::class, 'user']);
