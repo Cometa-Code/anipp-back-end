@@ -45,19 +45,20 @@ class UserPaymentsController extends Controller
 
         if ($request->G > 0) {
             $payment_type = 'Anuidade';
+            $credit_value = $request->G;
         }
 
         if ($request->H > 0) {
             $payment_type = 'Semestralidade';
+            $credit_value = $request->H;
         }
 
         if ($request->I) {
             $payment_type = 'Mensalidade';
+            $credit_value = $request->I;
         }
 
         $payment_date = $request->D;
-
-        $credit_value = $request->E;
 
         $membership_fee = $request->F;
 
