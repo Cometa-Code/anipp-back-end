@@ -55,7 +55,7 @@ class UserPaymentsController extends Controller
             $payment_type = 'Mensalidade';
         }
 
-        $payment_date = Carbon::createFromFormat('m/d/Y', $request->D)->format('Y-m-d');
+        $payment_date = $request->D;
 
         $credit_value = $request->E;
 
