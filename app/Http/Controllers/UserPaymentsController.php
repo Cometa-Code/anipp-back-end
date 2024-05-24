@@ -133,6 +133,10 @@ class UserPaymentsController extends Controller
 
         return Responses::OK('', [
             "data" => $getPayments,
+            "totalCreditValue" => $sumPayments['total_credit_value'],
+            "totalMembershipFee" => $sumPayments['total_membership_fee'],
+            "totalCharges" => $sumPayments['total_charges'],
+            "totalFees" => $sumPayments['total_fees'],
             "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
             "financial_situation" => $user->financial_situation
         ]);
@@ -170,6 +174,10 @@ class UserPaymentsController extends Controller
 
         return Responses::OK('', [
             "data" => $getPayments,
+            "totalCreditValue" => $sumPayments['total_credit_value'],
+            "totalMembershipFee" => $sumPayments['total_membership_fee'],
+            "totalCharges" => $sumPayments['total_charges'],
+            "totalFees" => $sumPayments['total_fees'],
             "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
             "financial_situation" => $user->financial_situation,
             "associate_data" => $getUserInfos
