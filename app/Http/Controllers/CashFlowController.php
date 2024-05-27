@@ -7,6 +7,15 @@ use App\Http\Requests\CashFlow\CreateCashFlowRequest;
 use App\Models\CashFlow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
+use App\Imports\ExcelImport;
+use App\Mail\NotIdentifierPaymentMail;
+use App\Mail\NotIdentifierUserMail;
+use App\Models\User;
+use App\Models\UserPayments;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class CashFlowController extends Controller
 {
@@ -63,5 +72,166 @@ class CashFlowController extends Controller
             'exit_sum' => $sumExit,
             'final_sum' => $finalSum
         ]);
+    }
+
+    public function read_extract(Request $request)
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $extrato = $request->json()->all();
+
+        $hasFullERR = false;
+        $hasERR = false;
+
+        /* For each geral */
+        foreach ($extrato as $item) {
+            $hasERR = false;
+            if ($item['__EMPTY_8']) {
+                /* Verificando o tipo da movimentação */
+                $type = $item['__EMPTY_8'];
+                $value = floatval(str_replace(',', '.', str_replace('.', '', trim($item['__EMPTY_7']))));
+                $date = Carbon::createFromFormat('d/m/Y', $item['Extrato Conta Corrente'])->format('Y-m-d');
+                $origin_agency = $item['__EMPTY_2'];
+                $allotment = $item['__EMPTY_3'];
+                $document_number = $item['__EMPTY_4'];
+                $history_code = $item['__EMPTY_5'];
+                $history = $item['__EMPTY_6'];
+                $history_detail = $item['__EMPTY_9'];
+
+                /* Se for do tipo entrada */
+                if ($type == 'C' || $type == 'c') {
+                    $identifier_type = preg_match('/\d{14}/', $history_detail) ? 'a' : 'b';
+
+                    /* Se for identificação por CPF */
+                    if ($identifier_type == 'a') {
+                        $getIdentifierNumber = preg_match('/\d{14}/', $history_detail, $matches);
+
+                        $getUser = User::where('bank_identifier_a', $matches[0])->first();
+
+                        /* Se não encontrar um usuário com essa identificação */
+                        if (!$getUser) {
+                            $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierUserMail("
+                                'type' => $type,
+                                'value' => $value,
+                                'date' => $date,
+                                'origin_agency' => $origin_agency,
+                                'allotment' => $allotment,
+                                'document_number' => $document_number,
+                                'history_code' => $history_code,
+                                'history' => $history,
+                                'history_detail' => $history_detail
+                            "));
+
+                            $hasERR = true;
+                        }
+                    }
+
+                    /* Se for identificação por número de documento */
+                    if ($identifier_type == 'b') {
+                        $getUser = User::where('bank_identifier_b', $document_number)->first();
+
+                        /* Se não encontrar um usuário com essa identificação */
+                        if (!$getUser) {
+                            $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierUserMail("
+                                'type' => $type,
+                                'value' => $value,
+                                'date' => $date,
+                                'origin_agency' => $origin_agency,
+                                'allotment' => $allotment,
+                                'document_number' => $document_number,
+                                'history_code' => $history_code,
+                                'history' => $history,
+                                'history_detail' => $history_detail
+                            "));
+
+                            $hasERR = true;
+                        }
+                    }
+
+                    $payment_type = false;
+
+                    /* Verificar o valor do pagamento */
+                    if ($value == 252 || $value == 288) {
+                        $payment_type = 'Anuidade';
+                    }
+
+                    if ($value == 180) {
+                        $payment_type = 'Semestralidade';
+                    }
+
+                    if ($value == 30) {
+                        $payment_type = 'Mensalidade';
+                    }
+
+                    /* Se o valor do pagamento não for identificado nos padrões */
+                    if (!$payment_type) {
+                        $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierPaymentMail($getUser->name, $getUser->email, $value, $date, $document_number));
+
+                        $hasERR = true;
+                    }
+
+                    /* Se não tiver erros */
+                    if (!$hasERR) {
+                        /* Adiciona aos pagamentos do usuário */
+                        UserPayments::create([
+                            'user_id' => $getUser->id,
+                            'payment_method' => $history,
+                            'payment_type' => $payment_type,
+                            'payment_date' => $date,
+                            'credit_value' => $value,
+                            'membership_fee' => 0,
+                            'charges' => 0,
+                            'fees' => 0,
+                            'comments' => $document_number,
+                        ]);
+
+                        /* Adiciona ao fluxo de caixa */
+                        CashFlow::create([
+                            'user_id' => $getUser->id,
+                            'type' => 'Saida',
+                            'date' => $date,
+                            'origin_agency' => $origin_agency,
+                            'allotment' => $allotment,
+                            'document_number' => $document_number,
+                            'history_code' => $history_code,
+                            'history' => $history,
+                            'history_detail' => $history_detail,
+                            'value' => $value,
+                        ]);
+                    }
+
+                    if ($hasERR) {
+                        $hasFullERR = true;
+                    }
+                }
+
+                /* Se for do tipo saída */
+                if ($type == 'D' || $type == 'd') {
+                    /* Criando registro no fluxo de caixa */
+                    $createCashFlow = CashFlow::create([
+                        'user_id' => $user->id,
+                        'type' => 'Saida',
+                        'date' => $date,
+                        'origin_agency' => $origin_agency,
+                        'allotment' => $allotment,
+                        'document_number' => $document_number,
+                        'history_code' => $history_code,
+                        'history' => $history,
+                        'history_detail' => $history_detail,
+                        'value' => $value,
+                    ]);
+                }
+            }
+        }
+
+        if ($hasFullERR) {
+            return Responses::CREATED('Histórico processado com sucesso. Confira o seu e-mail para resolver as pendências encontradas!');
+        }
+
+        return Responses::CREATED('Histórico processo e adicionado com sucesso!');
     }
 }
