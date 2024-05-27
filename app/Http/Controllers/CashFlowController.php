@@ -90,7 +90,7 @@ class CashFlowController extends Controller
         /* For each geral */
         foreach ($extrato as $item) {
             $hasERR = false;
-            if (array_key_exists('__EMPTY_8', $item) && $item['Extrato Conta Corrente'] != 'Data') {
+            if (array_key_exists('__EMPTY_8', $item) && $item['Extrato Conta Corrente'] != 'Data' && $item['__EMPTY_6'] != 'Aplicação BB CDB DI') {
                 /* Verificando o tipo da movimentação */
                 $type = $item['__EMPTY_8'];
                 $value = floatval(str_replace(',', '.', str_replace('.', '', trim($item['__EMPTY_7']))));
