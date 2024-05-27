@@ -74,6 +74,27 @@ class CashFlowController extends Controller
         ]);
     }
 
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $getCashFlow = CashFlow::where('id', $id)->first();
+
+        if (!$getCashFlow) {
+            return Responses::BADREQUEST('Fluxo de caixa não encontrado!');
+        }
+
+        $data = $request->all();
+
+        $getCashFlow->update($data);
+
+        return Responses::OK('Fluxo atualizado com sucesso!');
+    }
+
     public function read_extract(Request $request)
     {
         $user = Auth::user();

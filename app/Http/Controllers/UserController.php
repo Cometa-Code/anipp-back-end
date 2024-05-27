@@ -24,17 +24,30 @@ class UserController extends Controller
         $user = Auth::user();
 
         $items_per_page = $request->query('items_per_page', 10);
+        $termsFilter = $request->query('terms_filter', '');
 
         if ($user->role == 'associate') return Responses::BADREQUEST('Usuário não possui permissões suficientes!');
 
         if ($user->role == 'superadmin') {
-            $users = User::where('email', '!=', $user->email)->orderByRaw("FIELD(other_associations, 'Sim', 'Nao', 'Indefinido')")->paginate($items_per_page);
+            $users = User::where(function($query) use ($termsFilter) {
+                        $query->where('name', 'LIKE', "%$termsFilter%")
+                            ->orWhere('email', 'LIKE', "%$termsFilter%")
+                            ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                        })
+                        ->where('email', '!=', $user->email)
+                        ->orderBy('name', 'ASC')
+                        ->paginate($items_per_page);
         }
 
         if ($user->role == 'admin') {
-            $users = User::where('email', '!=', $user->email)
+            $users = User::where(function($query) use ($termsFilter) {
+                $query->where('name', 'LIKE', "%$termsFilter%")
+                    ->orWhere('email', 'LIKE', "%$termsFilter%")
+                    ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                })
+                ->where('email', '!=', $user->email)
                 ->where('role', 'associate')
-                ->orderByRaw("FIELD(other_associations, 'Sim', 'Nao', 'Indefinido')")
+                ->orderBy('name', 'ASC')
                 ->paginate($items_per_page);
         }
 
