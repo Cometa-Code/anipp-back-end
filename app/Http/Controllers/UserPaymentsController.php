@@ -133,6 +133,10 @@ class UserPaymentsController extends Controller
 
         return Responses::OK('', [
             "data" => $getPayments,
+            "totalCreditValue" => $sumPayments['total_credit_value'],
+            "totalMembershipFee" => $sumPayments['total_membership_fee'],
+            "totalCharges" => $sumPayments['total_charges'],
+            "totalFees" => $sumPayments['total_fees'],
             "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
             "financial_situation" => $user->financial_situation
         ]);
@@ -152,7 +156,7 @@ class UserPaymentsController extends Controller
 
         $getUserInfos = User::where('id', $user_id)->first();
 
-        $getPayments = UserPayments::whereBetween('payment_date', [$inital_date, $finish_date])->where('user_id', $user_id)->with('user')->orderBy('payment_date', 'desc')->paginate($items_per_page);
+        $getPayments = UserPayments::whereBetween('payment_date', [$inital_date, $finish_date])->where('user_id', $user_id)->with('user')->orderBy('payment_date', 'asc')->paginate($items_per_page);
 
         if (!$getPayments) {
             return Responses::BADREQUEST('Erro ao buscar pagamentos!');
@@ -170,6 +174,10 @@ class UserPaymentsController extends Controller
 
         return Responses::OK('', [
             "data" => $getPayments,
+            "totalCreditValue" => $sumPayments['total_credit_value'],
+            "totalMembershipFee" => $sumPayments['total_membership_fee'],
+            "totalCharges" => $sumPayments['total_charges'],
+            "totalFees" => $sumPayments['total_fees'],
             "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
             "financial_situation" => $user->financial_situation,
             "associate_data" => $getUserInfos
