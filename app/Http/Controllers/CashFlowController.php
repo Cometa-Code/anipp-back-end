@@ -192,7 +192,7 @@ class CashFlowController extends Controller
                         /* Adiciona ao fluxo de caixa */
                         CashFlow::create([
                             'user_id' => $getUser->id,
-                            'type' => 'Saida',
+                            'type' => 'Entrada',
                             'date' => $date,
                             'origin_agency' => $origin_agency,
                             'allotment' => $allotment,
