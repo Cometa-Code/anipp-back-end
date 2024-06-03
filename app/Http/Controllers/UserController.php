@@ -46,7 +46,7 @@ class UserController extends Controller
                     ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
                 })
                 ->where('email', '!=', $user->email)
-                ->where('role', 'associate')
+                ->where('role', '!=', 'superadmin')
                 ->orderBy('name', 'ASC')
                 ->paginate($items_per_page);
         }
