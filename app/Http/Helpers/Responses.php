@@ -4,43 +4,26 @@ namespace App\Http\Helpers;
 
 class Responses
 {
-    public static function OK($message = '', $data = '') {
+    public static function SUCCESS($message = '', $data = '', $code = 200, $success = true) {
         return response()->json(
             [
+                'success' => $success,
                 'data' => $data,
-                'message' => $message,
-                'status' => 200
+                'message' => $message
             ]
-        , 200);
+        , $code);
     }
 
-    public static function CREATED($message = '', $data = '') {
+    public static function ERROR($message = '', $data = '', $errorCode, $code = 400, $success = true) {
         return response()->json(
             [
-                'data' => $data,
-                'message' => $message,
-                'status' => 201
+                'success' => $success,
+                'error' => [
+                    'errorCode' => $errorCode,
+                    'message' => $message,
+                    'data' => $data
+                ]
             ]
-        , 201);
-    }
-
-    public static function BADREQUEST($message = '', $data = '') {
-        return response()->json(
-            [
-                'data' => $data,
-                'message' => $message,
-                'status' => 400
-            ]
-        , 400);
-    }
-
-    public static function NOTFOUND($message = '', $data = '') {
-        return response()->json(
-            [
-                'data' => $data,
-                'message' => $message,
-                'status' => 404
-            ]
-        , 404);
+        , $code);
     }
 }
