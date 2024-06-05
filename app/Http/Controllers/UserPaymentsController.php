@@ -127,17 +127,23 @@ class UserPaymentsController extends Controller
             DB::raw('SUM(credit_value) as total_credit_value'),
             DB::raw('SUM(membership_fee) as total_membership_fee'),
             DB::raw('SUM(charges) as total_charges'),
-            DB::raw('SUM(fees) as total_fees')
+            DB::raw('SUM(fees) as total_fees'),
+            DB::raw('SUM(CASE WHEN payment_type IN ("Mensalidade") THEN credit_value ELSE 0 END) as total_credit_value_monthly'),
+            DB::raw('SUM(CASE WHEN payment_type IN ("Semestralidade") THEN credit_value ELSE 0 END) as total_credit_value_semiannual'),
+            DB::raw('SUM(CASE WHEN payment_type IN ("Anuidade") THEN credit_value ELSE 0 END) as total_credit_value_annual')
         )
         ->first();
 
         return Responses::OK('', [
             "data" => $getPayments,
-            "totalCreditValue" => $sumPayments['total_credit_value'],
-            "totalMembershipFee" => $sumPayments['total_membership_fee'],
-            "totalCharges" => $sumPayments['total_charges'],
-            "totalFees" => $sumPayments['total_fees'],
+            "totalCreditValue" => $sumPayments['total_credit_value'] != null ? $sumPayments['total_credit_value'] : 0,
+            "totalMembershipFee" => $sumPayments['total_membership_fee'] != null ? $sumPayments['total_membership_fee'] : 0,
+            "totalCharges" => $sumPayments['total_charges'] != null ? $sumPayments['total_charges'] : 0,
+            "totalFees" => $sumPayments['total_fees'] != null ? $sumPayments['total_fees'] : 0,
             "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
+            "totalCreditValueMonthly" => $sumPayments['total_credit_value_monthly'] != null ? $sumPayments['total_credit_value_monthly'] : 0,
+            "totalCreditValueSemiannual" => $sumPayments['total_credit_value_semiannual'] != null ? $sumPayments['total_credit_value_semiannual'] : 0,
+            "totalCreditValueAnnual" => $sumPayments['total_credit_value_annual'] != null ? $sumPayments['total_credit_value_annual'] : 0,
             "financial_situation" => $user->financial_situation
         ]);
     }
@@ -168,17 +174,23 @@ class UserPaymentsController extends Controller
             DB::raw('SUM(credit_value) as total_credit_value'),
             DB::raw('SUM(membership_fee) as total_membership_fee'),
             DB::raw('SUM(charges) as total_charges'),
-            DB::raw('SUM(fees) as total_fees')
+            DB::raw('SUM(fees) as total_fees'),
+            DB::raw('SUM(CASE WHEN payment_type IN ("Mensalidade") THEN credit_value ELSE 0 END) as total_credit_value_monthly'),
+            DB::raw('SUM(CASE WHEN payment_type IN ("Semestralidade") THEN credit_value ELSE 0 END) as total_credit_value_semiannual'),
+            DB::raw('SUM(CASE WHEN payment_type IN ("Anuidade") THEN credit_value ELSE 0 END) as total_credit_value_annual')
         )
         ->first();
 
         return Responses::OK('', [
             "data" => $getPayments,
-            "totalCreditValue" => $sumPayments['total_credit_value'],
-            "totalMembershipFee" => $sumPayments['total_membership_fee'],
-            "totalCharges" => $sumPayments['total_charges'],
-            "totalFees" => $sumPayments['total_fees'],
+            "totalCreditValue" => $sumPayments['total_credit_value'] != null ? $sumPayments['total_credit_value'] : 0,
+            "totalMembershipFee" => $sumPayments['total_membership_fee'] != null ? $sumPayments['total_membership_fee'] : 0,
+            "totalCharges" => $sumPayments['total_charges'] != null ? $sumPayments['total_charges'] : 0,
+            "totalFees" => $sumPayments['total_fees'] != null ? $sumPayments['total_fees'] : 0,
             "totalSumPayments" => $sumPayments['total_credit_value'] + $sumPayments['total_membership_fee'] + $sumPayments['total_charges'] + $sumPayments['total_fees'],
+            "totalCreditValueMonthly" => $sumPayments['total_credit_value_monthly'] != null ? $sumPayments['total_credit_value_monthly'] : 0,
+            "totalCreditValueSemiannual" => $sumPayments['total_credit_value_semiannual'] != null ? $sumPayments['total_credit_value_semiannual'] : 0,
+            "totalCreditValueAnnual" => $sumPayments['total_credit_value_annual'] != null ? $sumPayments['total_credit_value_annual'] : 0,
             "financial_situation" => $user->financial_situation,
             "associate_data" => $getUserInfos
         ]);

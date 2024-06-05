@@ -31,7 +31,7 @@ class NotIdentifierUserMail extends Mailable
     {
         return new Envelope(
             from: new Address('nao-responda@anipp.org.br', 'ANIPP'),
-            subject: 'Pagamento não identificado!',
+            subject: 'Pagamentos não identificados na leitura do extrato!',
         );
     }
 

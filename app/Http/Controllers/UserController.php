@@ -46,7 +46,7 @@ class UserController extends Controller
                     ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
                 })
                 ->where('email', '!=', $user->email)
-                ->where('role', 'associate')
+                ->where('role', '!=', 'superadmin')
                 ->orderBy('name', 'ASC')
                 ->paginate($items_per_page);
         }
@@ -72,6 +72,8 @@ class UserController extends Controller
         }
 
         $data = $request->all();
+
+        $data['bank_identifier_a'] = "000" . $data['document_cpf'];
 
         $createUser = User::create($data);
 
@@ -273,5 +275,24 @@ class UserController extends Controller
         $hasToken->delete();
 
         return Responses::OK('Senha redefinida com sucesso!');
+    }
+
+    public function deactivate_user($id)
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $getUser = User::where('id', $id)->first();
+
+        if (!$getUser) {
+            return Responses::BADREQUEST('Usuário não encontrado!');
+        }
+
+        $getUser = $getUser->delete();
+
+        return Responses::OK('Usuário deletado com sucesso!');
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CashFlowController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserDependentsController;
 use App\Http\Controllers\UserPaymentsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/user', [UserController::class, 'update_user']);
     Route::put('/user/password', [UserController::class, 'update_password']);
     Route::put('/user/advanced/{document}', [UserController::class, 'update_advanced_user']);
+    Route::delete('/user/associates/deactivate_user/{id}', [UserController::class, 'deactivate_user']);
+
+    Route::post('/user/dependents', [UserDependentsController::class, 'store']);
+    Route::get('/user/dependents', [UserDependentsController::class, 'index']);
+    Route::delete('/user/dependents/{id}', [UserDependentsController::class, 'destroy']);
 
     Route::post('/payments', [UserPaymentsController::class, 'store']);
     Route::get('/payments', [UserPaymentsController::class, 'index']);

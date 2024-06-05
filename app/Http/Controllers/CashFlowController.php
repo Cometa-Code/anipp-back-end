@@ -107,6 +107,8 @@ class CashFlowController extends Controller
 
         $hasFullERR = false;
         $hasERR = false;
+        $notIdentifierUserMails = [];
+        $notIdentifierPaymentMails = [];
 
         /* For each geral */
         foreach ($extrato as $item) {
@@ -135,7 +137,7 @@ class CashFlowController extends Controller
 
                         /* Se não encontrar um usuário com essa identificação */
                         if (!$getUser) {
-                            /* $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierUserMail("
+                            array_push($notIdentifierUserMails, [
                                 'type' => $type,
                                 'value' => $value,
                                 'date' => $date,
@@ -145,7 +147,8 @@ class CashFlowController extends Controller
                                 'history_code' => $history_code,
                                 'history' => $history,
                                 'history_detail' => $history_detail
-                            ")); */
+                            ]);
+
 
                             $hasERR = true;
                         }
@@ -157,7 +160,7 @@ class CashFlowController extends Controller
 
                         /* Se não encontrar um usuário com essa identificação */
                         if (!$getUser) {
-                            /* $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierUserMail("
+                            array_push($notIdentifierUserMails, [
                                 'type' => $type,
                                 'value' => $value,
                                 'date' => $date,
@@ -167,7 +170,7 @@ class CashFlowController extends Controller
                                 'history_code' => $history_code,
                                 'history' => $history,
                                 'history_detail' => $history_detail
-                            ")); */
+                            ]);
 
                             $hasERR = true;
                         }
@@ -190,7 +193,17 @@ class CashFlowController extends Controller
 
                     /* Se o valor do pagamento não for identificado nos padrões */
                     if (!$payment_type && !$hasERR) {
-                        /* $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierPaymentMail($getUser->name, $getUser->email, $value, $date, $document_number)); */
+                        array_push($notIdentifierPaymentMails, [
+                            'type' => $type,
+                            'value' => $value,
+                            'date' => $date,
+                            'origin_agency' => $origin_agency,
+                            'allotment' => $allotment,
+                            'document_number' => $document_number,
+                            'history_code' => $history_code,
+                            'history' => $history,
+                            'history_detail' => $history_detail
+                        ]);
 
                         $hasERR = true;
                     }
@@ -248,6 +261,9 @@ class CashFlowController extends Controller
                 }
             }
         }
+
+        //$sendNotIUserM = Mail::to('vitorlauvresbarroso2@gmail.com')->send(new NotIdentifierUserMail($notIdentifierUserMails));
+        //$sendNotIPaymentM = Mail::to('vitorlauvresbarroso2@gmail.com')->send(new NotIdentifierPaymentMail($notIdentifierPaymentMails));
 
         if ($hasFullERR) {
             return Responses::CREATED('Histórico processado com sucesso. Confira o seu e-mail para resolver as pendências encontradas!');

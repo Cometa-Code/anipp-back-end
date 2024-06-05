@@ -14,22 +14,14 @@ class NotIdentifierPaymentMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $name;
-    public $email;
-    public $value;
-    public $date;
-    public $document_number;
+    public $infos;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($name, $email, $value, $date, $document_number)
+    public function __construct($infos)
     {
-        $this->name = $name;
-        $this->email = $email;
-        $this->value = $value;
-        $this->date = $date;
-        $this->document_number = $document_number;
+        $this->infos = $infos;
     }
 
     /**
@@ -39,7 +31,7 @@ class NotIdentifierPaymentMail extends Mailable
     {
         return new Envelope(
             from: new Address('nao-responda@anipp.org.br', 'ANIPP'),
-            subject: 'Valor incomum identificado',
+            subject: 'Valores incomums identificados na leitura do extrato',
         );
     }
 
@@ -51,11 +43,7 @@ class NotIdentifierPaymentMail extends Mailable
         return new Content(
             html: 'mails.not-identifier-payment',
             with: [
-                'name' => $this->name,
-                'email' => $this->email,
-                'value' => $this->value,
-                'date' => $this->date,
-                'document_number' => $this->document_number
+                'infos' => $this->infos
             ],
         );
     }
