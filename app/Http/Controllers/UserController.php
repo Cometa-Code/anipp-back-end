@@ -274,4 +274,23 @@ class UserController extends Controller
 
         return Responses::OK('Senha redefinida com sucesso!');
     }
+
+    public function deactivate_user($id)
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $getUser = User::where('id', $id)->first();
+
+        if (!$getUser) {
+            return Responses::BADREQUEST('Usuário não encontrado!');
+        }
+
+        $getUser = $getUser->delete();
+
+        return Responses::OK('Usuário deletado com sucesso!');
+    }
 }

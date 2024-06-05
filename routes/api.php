@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/user', [UserController::class, 'update_user']);
     Route::put('/user/password', [UserController::class, 'update_password']);
     Route::put('/user/advanced/{document}', [UserController::class, 'update_advanced_user']);
+    Route::delete('/user/associates/deactivate_user/{id}', [UserController::class, 'deactivate_user']);
 
     Route::post('/payments', [UserPaymentsController::class, 'store']);
     Route::get('/payments', [UserPaymentsController::class, 'index']);
