@@ -73,6 +73,8 @@ class UserController extends Controller
 
         $data = $request->all();
 
+        $data['bank_identifier_a'] = "000" . $data['document_cpf'];
+
         $createUser = User::create($data);
 
         if (!$createUser) {

@@ -107,6 +107,8 @@ class CashFlowController extends Controller
 
         $hasFullERR = false;
         $hasERR = false;
+        $notIdentifierUserMails = [];
+        $notIdentifierPaymentMail = [];
 
         /* For each geral */
         foreach ($extrato as $item) {
@@ -135,7 +137,7 @@ class CashFlowController extends Controller
 
                         /* Se não encontrar um usuário com essa identificação */
                         if (!$getUser) {
-                            /* $sendMail = Mail::to('vitorlauvresbarroso@gmail.com')->send(new NotIdentifierUserMail("
+                            array_push($notIdentifierUserMails, [
                                 'type' => $type,
                                 'value' => $value,
                                 'date' => $date,
@@ -145,7 +147,7 @@ class CashFlowController extends Controller
                                 'history_code' => $history_code,
                                 'history' => $history,
                                 'history_detail' => $history_detail
-                            ")); */
+                            ]);
 
                             $hasERR = true;
                         }

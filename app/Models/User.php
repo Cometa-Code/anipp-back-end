@@ -46,6 +46,8 @@ class User extends Authenticatable
         'date_of_birth',
         'is_active',
         'is_associate',
+        'bank_identifier_a',
+        'bank_identifier_b',
     ];
 
     /**
