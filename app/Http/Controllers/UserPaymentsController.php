@@ -144,7 +144,8 @@ class UserPaymentsController extends Controller
             "totalCreditValueMonthly" => $sumPayments['total_credit_value_monthly'] != null ? $sumPayments['total_credit_value_monthly'] : 0,
             "totalCreditValueSemiannual" => $sumPayments['total_credit_value_semiannual'] != null ? $sumPayments['total_credit_value_semiannual'] : 0,
             "totalCreditValueAnnual" => $sumPayments['total_credit_value_annual'] != null ? $sumPayments['total_credit_value_annual'] : 0,
-            "financial_situation" => $user->financial_situation
+            "financial_situation" => $user->financial_situation,
+            "financial_situation_description" => $user->financial_situation_description,
         ]);
     }
 
@@ -192,6 +193,7 @@ class UserPaymentsController extends Controller
             "totalCreditValueSemiannual" => $sumPayments['total_credit_value_semiannual'] != null ? $sumPayments['total_credit_value_semiannual'] : 0,
             "totalCreditValueAnnual" => $sumPayments['total_credit_value_annual'] != null ? $sumPayments['total_credit_value_annual'] : 0,
             "financial_situation" => $user->financial_situation,
+            "financial_situation_description" => $user->financial_situation_description,
             "associate_data" => $getUserInfos
         ]);
     }

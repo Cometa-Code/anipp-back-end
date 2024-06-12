@@ -43,6 +43,7 @@ class User extends Authenticatable
         'agency_bank',
         'account_bank',
         'financial_situation',
+        'financial_situation_description',
         'date_of_birth',
         'is_active',
         'is_associate',
