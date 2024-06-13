@@ -33,6 +33,27 @@ class UserPaymentsController extends Controller
         return Responses::CREATED('Pagamento adicionado com sucesso!');
     }
 
+    public function update_bank_identifier(Request $request)
+    {
+        $getUser = User::where('name', 'LIKE', "%$request->C%")->first();
+
+        if (!$getUser) {
+            return Responses::BADREQUEST('Usuário não encontrado');
+        }
+
+        if (!$request->E) {
+            return Responses::BADREQUEST('Campos não completos');
+        }
+
+        $bank_identifier_b = $request->E;
+
+        $getUser->update([
+            'bank_identifier_b' => $bank_identifier_b
+        ]);
+
+        return Responses::OK('Atualizado com sucesso!');
+    }
+
     public function insert_table_payments(Request $request)
     {
         $getUser = User::where('name', 'LIKE', "%$request->A%")->first();
@@ -56,7 +77,7 @@ class UserPaymentsController extends Controller
             $credit_value = $request->H;
         }
 
-        if ($request->I) {
+        if ($request->I > 0) {
             $payment_type = 'Mensalidade';
             $credit_value = $request->I;
         }
@@ -144,7 +165,8 @@ class UserPaymentsController extends Controller
             "totalCreditValueMonthly" => $sumPayments['total_credit_value_monthly'] != null ? $sumPayments['total_credit_value_monthly'] : 0,
             "totalCreditValueSemiannual" => $sumPayments['total_credit_value_semiannual'] != null ? $sumPayments['total_credit_value_semiannual'] : 0,
             "totalCreditValueAnnual" => $sumPayments['total_credit_value_annual'] != null ? $sumPayments['total_credit_value_annual'] : 0,
-            "financial_situation" => $user->financial_situation
+            "financial_situation" => $user->financial_situation,
+            "financial_situation_description" => $user->financial_situation_description,
         ]);
     }
 
@@ -192,6 +214,7 @@ class UserPaymentsController extends Controller
             "totalCreditValueSemiannual" => $sumPayments['total_credit_value_semiannual'] != null ? $sumPayments['total_credit_value_semiannual'] : 0,
             "totalCreditValueAnnual" => $sumPayments['total_credit_value_annual'] != null ? $sumPayments['total_credit_value_annual'] : 0,
             "financial_situation" => $user->financial_situation,
+            "financial_situation_description" => $user->financial_situation_description,
             "associate_data" => $getUserInfos
         ]);
     }

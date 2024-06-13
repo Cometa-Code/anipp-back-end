@@ -160,6 +160,7 @@ class UserController extends Controller
 
         $data['role'] = 'associate';
         $data['is_associate'] = true;
+        $data['bank_identifier_a'] = "000" . $data['document_cpf'];
 
         $createUser = User::create($data);
 
