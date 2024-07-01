@@ -117,7 +117,7 @@ class UserPaymentsController extends Controller
             'document_number' => null,
             'history_code' => null,
             'history' => null,
-            'value' => $credit_value,
+            'value' => $credit_value + $membership_fee + $fees + $charges,
             'history_detail' => null,
             'description' => "Recebimento de $getUser->name",
         ]);

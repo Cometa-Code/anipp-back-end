@@ -20,11 +20,10 @@ Route::post('/user/recover-password', [UserController::class, 'generate_token'])
 Route::get('/user/recover-password/verify-token/{token}', [UserController::class, 'verify_token']);
 Route::post('/user/recover-password/set-password', [UserController::class, 'recover_password']);
 
-//Route::post('/payments/table', [UserPaymentsController::class, 'insert_table_payments']);
-//Route::put('/payments/table', [UserPaymentsController::class, 'update_bank_identifier']);
+Route::post('/payments/table', [UserPaymentsController::class, 'insert_table_payments']);
+Route::put('/payments/table', [UserPaymentsController::class, 'update_bank_identifier']);
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
     Route::get('/user', [UserController::class, 'user']);
     Route::get('/user/associates', [UserController::class, 'get_associates']);
     Route::post('/user/advanced', [UserController::class, 'create_advanced_user']);
