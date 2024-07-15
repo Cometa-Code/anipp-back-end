@@ -25,30 +25,88 @@ class UserController extends Controller
 
         $items_per_page = $request->query('items_per_page', 10);
         $termsFilter = $request->query('terms_filter', '');
+        $financialLifeFilter = $request->query('financial_life_filter', 'todos');
 
         if ($user->role == 'associate') return Responses::BADREQUEST('Usuário não possui permissões suficientes!');
 
         if ($user->role == 'superadmin') {
-            $users = User::where(function($query) use ($termsFilter) {
-                        $query->where('name', 'LIKE', "%$termsFilter%")
-                            ->orWhere('email', 'LIKE', "%$termsFilter%")
-                            ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
-                        })
-                        ->where('email', '!=', $user->email)
-                        ->orderBy('name', 'ASC')
-                        ->paginate($items_per_page);
+            if ($financialLifeFilter == 'todos') {
+                $users = User::where(function($query) use ($termsFilter) {
+                            $query->where('name', 'LIKE', "%$termsFilter%")
+                                ->orWhere('email', 'LIKE', "%$termsFilter%")
+                                ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                            })
+                            ->with('dependents')
+                            ->where('email', '!=', $user->email)
+                            ->orderBy('name', 'ASC')
+                            ->paginate($items_per_page);
+            } else {
+                switch($financialLifeFilter) {
+                    case 'adimplente':
+                        $financialLifeStatus = 'Adimplente';
+                        break;
+
+                    case 'inadimplente':
+                        $financialLifeStatus = 'Inadimplente';
+                        break;
+
+                    case 'indefinido':
+                        $financialLifeStatus = 'Indefinido';
+                        break;
+                }
+
+                $users = User::where(function($query) use ($termsFilter) {
+                    $query->where('name', 'LIKE', "%$termsFilter%")
+                        ->orWhere('email', 'LIKE', "%$termsFilter%")
+                        ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                    })
+                    ->with('dependents')
+                    ->where('financial_situation', $financialLifeFilter)
+                    ->where('email', '!=', $user->email)
+                    ->orderBy('name', 'ASC')
+                    ->paginate($items_per_page);
+            }
         }
 
         if ($user->role == 'admin') {
-            $users = User::where(function($query) use ($termsFilter) {
-                $query->where('name', 'LIKE', "%$termsFilter%")
-                    ->orWhere('email', 'LIKE', "%$termsFilter%")
-                    ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
-                })
-                ->where('email', '!=', $user->email)
-                ->where('role', '!=', 'superadmin')
-                ->orderBy('name', 'ASC')
-                ->paginate($items_per_page);
+            if ($financialLifeFilter == 'todos') {
+                $users = User::where(function($query) use ($termsFilter) {
+                    $query->where('name', 'LIKE', "%$termsFilter%")
+                        ->orWhere('email', 'LIKE', "%$termsFilter%")
+                        ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                    })
+                    ->with('dependents')
+                    ->where('email', '!=', $user->email)
+                    ->where('role', '!=', 'superadmin')
+                    ->orderBy('name', 'ASC')
+                    ->paginate($items_per_page);
+            } else {
+                switch($financialLifeFilter) {
+                    case 'adimplente':
+                        $financialLifeStatus = 'Adimplente';
+                        break;
+
+                    case 'inadimplente':
+                        $financialLifeStatus = 'Inadimplente';
+                        break;
+
+                    case 'indefinido':
+                        $financialLifeStatus = 'Indefinido';
+                        break;
+                }
+
+                $users = User::where(function($query) use ($termsFilter) {
+                    $query->where('name', 'LIKE', "%$termsFilter%")
+                        ->orWhere('email', 'LIKE', "%$termsFilter%")
+                        ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                    })
+                    ->with('dependents')
+                    ->where('email', '!=', $user->email)
+                    ->where('role', '!=', 'superadmin')
+                    ->where('financial_situation', $financialLifeStatus)
+                    ->orderBy('name', 'ASC')
+                    ->paginate($items_per_page);
+            }
         }
 
         return Responses::OK('Associados encontrados com sucesso', $users);
