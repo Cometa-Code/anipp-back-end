@@ -21,7 +21,8 @@ class CashFlow extends Model
         'history',
         'value',
         'history_detail',
-        'description'
+        'description',
+        'is_correct',
     ];
 
     public function user() : BelongsTo

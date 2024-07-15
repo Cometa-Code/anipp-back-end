@@ -54,7 +54,8 @@ class CashFlowController extends Controller
         $inital_date = $request->query('initial_date', '2018-01-01');
         $finish_date = $request->query('finish_date', date('Y-m-d'));
 
-        $getCashFlow = CashFlow::whereBetween('date', [$inital_date, $finish_date])->orderBy('date', 'desc')->paginate($items_per_page);
+        $getCashFlow = CashFlow::whereBetween('date', [$inital_date, $finish_date])->orderBy('is_correct', 'asc')
+        ->orderBy('date', 'desc')->paginate($items_per_page);
 
         $sumEntry = CashFlow::where('type', 'Entrada')
                             ->whereBetween('date', [$inital_date, $finish_date])
@@ -113,7 +114,7 @@ class CashFlowController extends Controller
         /* For each geral */
         foreach ($extrato as $item) {
             $hasERR = false;
-            if (array_key_exists('__EMPTY_8', $item) && $item['Extrato Conta Corrente'] != 'Data' && $item['__EMPTY_6'] != 'Aplicação BB CDB DI') {
+            if (array_key_exists('__EMPTY_8', $item) && $item['Extrato Conta Corrente'] != 'Data' && ($item['__EMPTY_4'] != '00000000000000000' && $item['__EMPTY_5'] != 999)) {
                 /* Verificando o tipo da movimentação */
                 $type = $item['__EMPTY_8'];
                 $value = floatval(str_replace(',', '.', str_replace('.', '', trim($item['__EMPTY_7']))));
@@ -221,22 +222,32 @@ class CashFlowController extends Controller
                             'charges' => 0,
                             'fees' => 0,
                             'comments' => $document_number,
-                        ]);
-
-                        /* Adiciona ao fluxo de caixa */
-                        CashFlow::create([
-                            'user_id' => $getUser->id,
-                            'type' => 'Entrada',
-                            'date' => $date,
-                            'origin_agency' => $origin_agency,
-                            'allotment' => $allotment,
-                            'document_number' => $document_number,
-                            'history_code' => $history_code,
-                            'history' => $history,
-                            'history_detail' => $history_detail,
-                            'value' => $value,
+                            'is_correct' => true,
                         ]);
                     }
+
+                    if ($hasERR) {
+                        $is_correct = false;
+                        $user_id = $user->id;
+                    } else {
+                        $is_correct = true;
+                        $user_id = $getUser->id;
+                    }
+
+                    /* Adiciona ao fluxo de caixa */
+                    CashFlow::create([
+                        'user_id' => $user_id,
+                        'type' => 'Entrada',
+                        'date' => $date,
+                        'origin_agency' => $origin_agency,
+                        'allotment' => $allotment,
+                        'document_number' => $document_number,
+                        'history_code' => $history_code,
+                        'history' => $history,
+                        'history_detail' => $history_detail,
+                        'value' => $value,
+                        'is_correct' => $is_correct
+                    ]);
 
                     if ($hasERR) {
                         $hasFullERR = true;
@@ -257,13 +268,11 @@ class CashFlowController extends Controller
                         'history' => $history,
                         'history_detail' => $history_detail,
                         'value' => $value,
+                        'is_correct' => true
                     ]);
                 }
             }
         }
-
-        //$sendNotIUserM = Mail::to('vitorlauvresbarroso2@gmail.com')->send(new NotIdentifierUserMail($notIdentifierUserMails));
-        //$sendNotIPaymentM = Mail::to('vitorlauvresbarroso2@gmail.com')->send(new NotIdentifierPaymentMail($notIdentifierPaymentMails));
 
         if ($hasFullERR) {
             return Responses::CREATED('Histórico processado com sucesso. Confira o seu e-mail para resolver as pendências encontradas!');
