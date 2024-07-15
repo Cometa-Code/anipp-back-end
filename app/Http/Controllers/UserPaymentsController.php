@@ -54,6 +54,25 @@ class UserPaymentsController extends Controller
         return Responses::OK('Atualizado com sucesso!');
     }
 
+    public function delete($id)
+    {
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Usuário não autorizado para realizar essa ação');
+        }
+
+        $getPayment = UserPayments::where('id', $id)->first();
+
+        if (!$getPayment) {
+            return Responses::NOTFOUND('Pagamento não localizado');
+        }
+
+        $getPayment->delete();
+
+        return Responses::OK('Pagamento deletado com sucesso!');
+    }
+
     public function insert_table_payments(Request $request)
     {
         $getUser = User::where('name', 'LIKE', "%$request->A%")->first();
