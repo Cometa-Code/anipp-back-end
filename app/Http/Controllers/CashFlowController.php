@@ -180,7 +180,7 @@ class CashFlowController extends Controller
                     $payment_type = false;
 
                     /* Verificar o valor do pagamento */
-                    if ($value == 252 || $value == 288) {
+                    if ($value == 360 || $value == 252 || $value == 288) {
                         $payment_type = 'Anuidade';
                     }
 
