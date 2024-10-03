@@ -48,5 +48,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/cash_flow', [CashFlowController::class, 'store']);
     Route::put('/cash_flow/{id}', [CashFlowController::class, 'update']);
     Route::post('/cash_flow/read_extract', [CashFlowController::class, 'read_extract']);
+    Route::post('/cash_flow/read_extract_billet', [CashFlowController::class, 'read_extract_billet']);
     Route::get('/cash_flow', [CashFlowController::class, 'index']);
 });
