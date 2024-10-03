@@ -188,7 +188,7 @@ class CashFlowController extends Controller
                         $payment_type = 'Semestralidade';
                     }
 
-                    if ($value == 30) {
+                    if ($value == 30 || $value == 60 || $value == 90 || $value == 120 || $value == 150) {
                         $payment_type = 'Mensalidade';
                     }
 
@@ -212,18 +212,225 @@ class CashFlowController extends Controller
                     /* Se não tiver erros */
                     if (!$hasERR) {
                         /* Adiciona aos pagamentos do usuário */
-                        UserPayments::create([
-                            'user_id' => $getUser->id,
-                            'payment_method' => $history,
-                            'payment_type' => $payment_type,
-                            'payment_date' => $date,
-                            'credit_value' => $value,
-                            'membership_fee' => 0,
-                            'charges' => 0,
-                            'fees' => 0,
-                            'comments' => $document_number,
-                            'is_correct' => true,
-                        ]);
+                        if ($value == 30 || $value == 60 || $value == 90 || $value == 120 || $value == 150) {
+                            if ($value == 30) {
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+                            }
+
+                            if ($value == 60) {
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+                            }
+
+                            if ($value == 90) {
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+                            }
+
+                            if ($value == 120) {
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+                            }
+
+                            if ($value == 150) {
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+
+                                UserPayments::create([
+                                    'user_id' => $getUser->id,
+                                    'payment_method' => $history,
+                                    'payment_type' => $payment_type,
+                                    'payment_date' => $date,
+                                    'credit_value' => $value,
+                                    'membership_fee' => 0,
+                                    'charges' => 0,
+                                    'fees' => 0,
+                                    'comments' => $document_number,
+                                    'is_correct' => true,
+                                ]);
+                            }
+                        } else {
+                            UserPayments::create([
+                                'user_id' => $getUser->id,
+                                'payment_method' => $history,
+                                'payment_type' => $payment_type,
+                                'payment_date' => $date,
+                                'credit_value' => $value,
+                                'membership_fee' => 0,
+                                'charges' => 0,
+                                'fees' => 0,
+                                'comments' => $document_number,
+                                'is_correct' => true,
+                            ]);
+                        }
                     }
 
                     if ($hasERR) {
