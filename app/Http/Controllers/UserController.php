@@ -40,6 +40,17 @@ class UserController extends Controller
                             ->where('email', '!=', $user->email)
                             ->orderBy('name', 'ASC')
                             ->paginate($items_per_page);
+            } else if ($financialLifeFilter == 'falecido') {
+                $users = User::where(function($query) use ($termsFilter) {
+                    $query->where('name', 'LIKE', "%$termsFilter%")
+                        ->orWhere('email', 'LIKE', "%$termsFilter%")
+                        ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                    })
+                    ->with('dependents')
+                    ->where('email', '!=', $user->email)
+                    ->where('marital_status', 'Falecido')
+                    ->orderBy('name', 'ASC')
+                    ->paginate($items_per_page);
             } else {
                 switch($financialLifeFilter) {
                     case 'adimplente':
@@ -78,6 +89,18 @@ class UserController extends Controller
                     ->with('dependents')
                     ->where('email', '!=', $user->email)
                     ->where('role', '!=', 'superadmin')
+                    ->orderBy('name', 'ASC')
+                    ->paginate($items_per_page);
+            } else if ($financialLifeFilter == 'falecido') {
+                $users = User::where(function($query) use ($termsFilter) {
+                    $query->where('name', 'LIKE', "%$termsFilter%")
+                        ->orWhere('email', 'LIKE', "%$termsFilter%")
+                        ->orWhere('document_cpf', 'LIKE', "%$termsFilter%");
+                    })
+                    ->with('dependents')
+                    ->where('email', '!=', $user->email)
+                    ->where('role', '!=', 'superadmin')
+                    ->where('marital_status', 'Falecido')
                     ->orderBy('name', 'ASC')
                     ->paginate($items_per_page);
             } else {
