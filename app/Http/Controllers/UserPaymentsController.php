@@ -33,6 +33,15 @@ class UserPaymentsController extends Controller
         return Responses::CREATED('Pagamento adicionado com sucesso!');
     }
 
+    public function all_payments()
+    {
+        $user = Auth::user();
+
+        $getPayments = UserPayments::where('user_id', $user->id)->orderBy('payment_date', 'asc')->get(['payment_method', 'payment_type', 'payment_date', 'credit_value', 'membership_fee', 'charges', 'fees', 'comments']);
+
+        return Responses::OK('', $getPayments);
+    }
+
     public function update_bank_identifier(Request $request)
     {
         $getUser = User::where('name', 'LIKE', "%$request->C%")->first();
