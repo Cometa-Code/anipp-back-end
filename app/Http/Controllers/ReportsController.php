@@ -14,9 +14,9 @@ class ReportsController extends Controller
     public function update(Request $request, $reportId)
     {
         $validated = $request->validate([
-            'title' => 'string|min:1',
-            'file_name' => 'string',
-            'file_url' => 'string'
+            'title' => 'nullable|string|min:1',
+            'file_name' => 'nullable',
+            'file_url' => 'nullable'
         ]);
 
         $user = Auth::user();
@@ -36,7 +36,7 @@ class ReportsController extends Controller
         ];
 
         if ($request->file_name && $request->file_name != null) {
-            $updateData = $request->file_name;
+            $updateData['file_name'] = $request->file_name;
         }
 
         if ($request->file_url && $request->file_url != null) {
