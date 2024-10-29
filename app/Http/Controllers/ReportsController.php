@@ -11,6 +11,44 @@ use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
+    public function update(Request $request, $reportId)
+    {
+        $validated = $request->validate([
+            'title' => 'nullable|string|min:1',
+            'file_name' => 'nullable',
+            'file_url' => 'nullable'
+        ]);
+
+        $user = Auth::user();
+
+        if ($user->role == 'associate') {
+            return Responses::BADREQUEST('Apenas administradores podem tomar essa ação!');
+        }
+
+        $getReport = Reports::where('id', $reportId)->first();
+
+        if (!$getReport) {
+            return Responses::BADREQUEST('O informe não foi localizado!');
+        }
+
+        $updateData = [
+            'title' => $validated['title'],
+        ];
+
+        if ($request->file_name && $request->file_name != null) {
+            $updateData['file_name'] = $request->file_name;
+        }
+
+        if ($request->file_url && $request->file_url != null) {
+            $updateData['file_url'] = $request->file_url;
+        }
+
+        $getReport->update($updateData);
+        $getReport->save();
+
+        return Responses::OK('Informativo atualizado com sucesso!', $getReport);
+    }
+
     public function store(CreateReportRequest $request)
     {
         $user = Auth::user();
